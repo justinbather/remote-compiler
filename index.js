@@ -14,15 +14,26 @@ app.use(
 app.post("/js-test", (req, res) => {
   const data = req.body;
   //   console.log(data);
+  let str = `console.log('hello world')
+  console.log('#2')
+  const test = () => {
+    
+    return 'testing function'
+  }
+  console.log(test())
+  `;
+  let inputJSON = JSON.stringify(str);
   //   console.log(data);
   try {
-    eval(data.code);
+    let strJSON = JSON.parse(inputJSON);
+    eval(strJSON); //* runs function and outputs all code correctly to stdout or returns stderr in response
+
+    return res.status(200).json({ success: "code ran successfully" });
   } catch (e) {
     return res.status(400).json({ success: false, error: String(e) });
   }
-  console.log(eval(data.code));
+
   //   console.log(eval);
-  return res.status(200).json({ success: "not" });
 });
 
 app.listen(port, () => {
