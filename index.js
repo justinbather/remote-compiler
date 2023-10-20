@@ -11,9 +11,11 @@ app.use(
   })
 );
 
+//* Temporarily uses local string var with javascript to simulate the ability to use JSON.stringify
+//* Will need to look into converting to binary on the front end before sending
 app.post("/js-test", (req, res) => {
   const data = req.body;
-  //   console.log(data);
+
   let str = `console.log('hello world')
   console.log('#2')
   const test = () => {
