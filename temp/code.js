@@ -1,5 +1,3 @@
-const myFn = () => {
-return [1,3,5,6]
-}
+const x = 'test string'
 
-console.log(myFn())
+x.split('')

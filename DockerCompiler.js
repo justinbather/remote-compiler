@@ -32,13 +32,21 @@ export default class DockerCompiler {
 
   execute() {
     //* Need to now create a bash script that spawns a docker container and runs the below command
-    exec("node ./temp/code.js", (error, stdout, stderr) => {
-      if (error) {
-        console.log(error);
-      }
 
-      console.log("stdout: ", stdout);
-      console.log("stderr: ", stderr);
-    });
+    const cmd =
+      "docker run -it --rm --name test-container -v ./temp -w /temp node:20 node code.js > output.txt";
+
+    const python =
+      "docker run -it --rm --name test-container -v ./temp -w /temp python:3 python3 code.py > output.txt";
+    exec(cmd);
+
+    // exec("node ./temp/code.js", (error, stdout, stderr) => {
+    //   if (error) {
+    //     console.log(error);
+    //   }
+
+    //   console.log("stdout: ", stdout);
+    //   console.log("stderr: ", stderr);
+    // });
   }
 }
