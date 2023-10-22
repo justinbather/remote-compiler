@@ -31,11 +31,14 @@ export default class DockerCompiler {
   }
 
   execute() {
-    //* with use of fs and child_process.exec()
-    //* exec can be called with a promise or a cb
-    //* after spawning a shell and booting a docker container we run the
-    //* sanitized command in to run the code
-    //* return stdin, stdout, stderr
-    exec("node ./temp/code.js");
+    //* Need to now create a bash script that spawns a docker container and runs the below command
+    exec("node ./temp/code.js", (error, stdout, stderr) => {
+      if (error) {
+        console.log(error);
+      }
+
+      console.log("stdout: ", stdout);
+      console.log("stderr: ", stderr);
+    });
   }
 }
