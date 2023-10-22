@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import DockerCompiler from "./DockerCompiler.js";
 
 const app = express();
 const port = 3000;
@@ -51,7 +52,18 @@ app.post("/js-test", (req, res) => {
 
 app.post("/compile-test", (req, res) => {
   const code = req.body.code;
-  console.log(code);
+
+  //*need vmname, comipler?, code, stdin?
+  //* run fn
+  //* prepare
+  // *execute
+  // *cb
+  // console.log(code);
+
+  let DockCompiler = new DockerCompiler(code);
+
+  DockCompiler.run();
+
   try {
     eval(code);
     return res.status(200).json({ success: true });
