@@ -1,4 +1,4 @@
-export const Languages = [
+export const languages = [
   {
     lang: "Python",
     fileExt: ".py",

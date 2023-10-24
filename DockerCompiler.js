@@ -9,19 +9,15 @@ export default class DockerCompiler {
     this.fileExt = fileExt;
     this.dockerImage = dockerImage;
     this.fileName = `code${this.fileExt}`;
-    // (this.timeout = timeout), vmName, stdin;
-    // this.vmName = vmName;
-    // this.stdin = stdin;
   }
 
+  //* Runs the DockerCompiler build process to run a user's code upon submission
   run() {
-    // this.prepare(function () {
-    //   this.execute(successCb);
-    // });
-
     this.prepare();
   }
 
+  //* Prepares the files to be ran
+  //* Writes user's code to a new file in /temp to be copied into the docker instance
   prepare() {
     fs.writeFile(`./temp/${this.fileName}`, this.code, (err) => {
       if (err) {
@@ -31,17 +27,13 @@ export default class DockerCompiler {
         this.execute();
       }
     });
-
-    //*create file and copy code to it before executing
   }
 
+  //* This gets executed by child process which runs the bash script docker.sh
+  //* Docker.sh creates a container with the user's code to be ran by providing the file extension and executing cmd below
   execute() {
-    //* Need to now create a bash script that spawns a docker container and runs the below command
-
     const cmd = `./docker.sh ${this.fileName} ${this.executor} ${this.dockerImage}`;
 
-    const python =
-      "docker run -i --rm --name test-container -v /temp -w /temp python:3 python3 code.py > temp/output.txt";
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
         console.log(error);
@@ -49,22 +41,17 @@ export default class DockerCompiler {
       }
       if (stderr) {
         fs.writeFile("./temp/output.txt", stderr, (err) => {
-          console.log("error occured writing output", err);
+          if (err) {
+            console.log("error occured writing output", err);
+          }
         });
       }
       console.log("stdout: ", stdout);
       fs.writeFile("./temp/output.txt", stdout, (err) => {
-        console.log("error occured writing output", err);
+        if (err) {
+          console.log("error occured writing output", err);
+        }
       });
     });
-
-    // exec("node ./temp/code.js", (error, stdout, stderr) => {
-    //   if (error) {
-    //     console.log(error);
-    //   }
-
-    //   console.log("stdout: ", stdout);
-    //   console.log("stderr: ", stderr);
-    // });
   }
 }

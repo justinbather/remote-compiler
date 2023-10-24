@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import DockerCompiler from "./DockerCompiler.js";
-import { Languages } from "./languages.js";
+import { languages } from "./languages.js";
 
 const app = express();
 const port = 3000;
@@ -47,35 +47,25 @@ app.post("/js-test", (req, res) => {
   } catch (e) {
     return res.status(400).json({ success: false, error: String(e) });
   }
-
-  //   console.log(eval);
 });
 
 app.post("/compile-test", (req, res) => {
   const code = req.body.code;
   const lang = req.body.lang;
 
-  //*need vmname, comipler?, code, stdin?
-  //* run fn
-  //* prepare
-  // *execute
-  // *cb
-  // console.log(code);
-
-  let idx = Languages.findIndex((el) => el.lang === lang);
-  console.log(idx);
+  //* Grab index in languages array so we know how to run the code in the container
+  let idx = languages.findIndex((el) => el.lang === lang);
 
   let DockCompiler = new DockerCompiler(
     code,
-    Languages[idx].lang,
-    Languages[idx].executor,
-    Languages[idx].fileExt,
-    Languages[idx].dockerImage
+    languages[idx].lang,
+    languages[idx].executor,
+    languages[idx].fileExt,
+    languages[idx].dockerImage
   );
 
   try {
     DockCompiler.run();
-
     return res.status(200).json({ success: true });
   } catch (e) {
     return res.status(400).json({ success: false, error: e });

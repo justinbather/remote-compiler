@@ -1,5 +1,1 @@
-def main():
-  x = 'hello'
-  print(x)
-
-main()
+console.log('test')
