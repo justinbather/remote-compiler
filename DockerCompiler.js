@@ -18,7 +18,7 @@ export default class DockerCompiler {
   }
 
   prepare() {
-    fs.writeFile("./temp/code.js", this.code, (err) => {
+    fs.writeFile("./temp/code.py", this.code, (err) => {
       if (err) {
         console.log("error writing to temp file, error: ", err);
       } else {
@@ -33,12 +33,17 @@ export default class DockerCompiler {
   execute() {
     //* Need to now create a bash script that spawns a docker container and runs the below command
 
-    const cmd =
-      "docker run -it --rm --name test-container -v ./temp -w /temp node:20 node code.js > output.txt";
+    const cmd = "./docker.sh";
 
     const python =
-      "docker run -it --rm --name test-container -v ./temp -w /temp python:3 python3 code.py > output.txt";
-    exec(cmd);
+      "docker run -i --rm --name test-container -v /temp -w /temp python:3 python3 code.py > temp/output.txt";
+    exec(cmd, (error, stdout, stdin) => {
+      if (error) {
+        console.log(error);
+        return;
+      }
+      console.log("stdout: ", stdout);
+    });
 
     // exec("node ./temp/code.js", (error, stdout, stderr) => {
     //   if (error) {

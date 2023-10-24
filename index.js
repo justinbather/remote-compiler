@@ -62,10 +62,9 @@ app.post("/compile-test", (req, res) => {
 
   let DockCompiler = new DockerCompiler(code);
 
-  DockCompiler.run();
-
   try {
-    eval(code);
+    DockCompiler.run();
+
     return res.status(200).json({ success: true });
   } catch (e) {
     return res.status(400).json({ success: false, error: e });

@@ -1,3 +1,1 @@
-const x = 'test string'
-
-x.split('')
+console.log('hello')
