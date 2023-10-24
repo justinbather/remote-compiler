@@ -1,1 +1,5 @@
-print('hello in python')
+def main():
+  x = 'hello'
+  print(x)
+
+main()

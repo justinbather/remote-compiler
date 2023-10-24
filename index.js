@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import DockerCompiler from "./DockerCompiler.js";
+import { Languages } from "./languages.js";
 
 const app = express();
 const port = 3000;
@@ -52,6 +53,7 @@ app.post("/js-test", (req, res) => {
 
 app.post("/compile-test", (req, res) => {
   const code = req.body.code;
+  const lang = req.body.lang;
 
   //*need vmname, comipler?, code, stdin?
   //* run fn
@@ -60,7 +62,16 @@ app.post("/compile-test", (req, res) => {
   // *cb
   // console.log(code);
 
-  let DockCompiler = new DockerCompiler(code);
+  let idx = Languages.findIndex((el) => el.lang === lang);
+  console.log(idx);
+
+  let DockCompiler = new DockerCompiler(
+    code,
+    Languages[idx].lang,
+    Languages[idx].executor,
+    Languages[idx].fileExt,
+    Languages[idx].dockerImage
+  );
 
   try {
     DockCompiler.run();

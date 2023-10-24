@@ -4,7 +4,7 @@ const handleSubmit = async () => {
   try {
     const response = await axios.post(
       "http://localhost:3000/compile-test",
-      { code: code },
+      { code: code, lang: "Python" },
       {
         headers: { "Content-Type": "application/json" },
         withCredentials: false,
