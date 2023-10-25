@@ -50,6 +50,7 @@ app.post("/js-test", (req, res) => {
 });
 
 app.post("/compile-test", (req, res) => {
+  let start = console.time();
   const code = req.body.code;
   const lang = req.body.lang;
 
@@ -66,6 +67,9 @@ app.post("/compile-test", (req, res) => {
 
   try {
     DockCompiler.run();
+
+    let end = console.timeEnd();
+
     return res.status(200).json({ success: true });
   } catch (e) {
     return res.status(400).json({ success: false, error: e });

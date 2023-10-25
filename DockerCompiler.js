@@ -32,6 +32,7 @@ export default class DockerCompiler {
   //* This gets executed by child process which runs the bash script docker.sh
   //* Docker.sh creates a container with the user's code to be ran by providing the file extension and executing cmd below
   execute() {
+    let start = console.time();
     const cmd = `./docker.sh ${this.fileName} ${this.executor} ${this.dockerImage}`;
 
     exec(cmd, (error, stdout, stderr) => {
@@ -52,6 +53,8 @@ export default class DockerCompiler {
           console.log("error occured writing output", err);
         }
       });
+      let end = console.timeEnd();
+      console.log(end);
     });
   }
 }
