@@ -32,30 +32,34 @@ export default class DockerCompiler {
   //* This gets executed by child process which runs the bash script docker.sh
   //* Docker.sh creates a container with the user's code to be ran by providing the file extension and executing cmd below
   execute(success) {
-    let start = console.time();
+    //! Implement a timeout
+    //? In bash script?
+    console.time();
     const cmd = `./docker.sh ${this.fileName} ${this.executor} ${this.dockerImage}`;
 
     exec(cmd, (error, stdout, stderr) => {
+      let data = "";
+      let errorData = "";
+      let hints = ""; // In case there is no error or stdout we should make sure the user
+      // knows to call the function in the code
+
       if (error) {
+        //! Log error here
         console.log(error);
-        return;
       }
+
       if (stderr) {
-        fs.writeFile("./temp/output.txt", stderr, (err) => {
-          if (err) {
-            console.log("error occured writing output", err);
-          }
-        });
+        errorData += stderr;
       }
-      console.log("stdout: ", stdout);
-      fs.writeFile("./temp/output.txt", stdout, (err) => {
-        if (err) {
-          console.log("error occured writing output", err);
-        }
-        success(stdout);
-      });
-      let end = console.timeEnd();
-      console.log(end);
+
+      if (stdout) {
+        data = stdout;
+      } else if (!error && !stderr) {
+        hints = "Make sure you call your function!";
+      }
+
+      success(data, errorData, hints);
+      console.timeEnd();
     });
   }
 }

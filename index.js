@@ -65,13 +65,25 @@ app.post("/compile-test", (req, res) => {
     languages[idx].dockerImage
   );
 
-  try {
-    DockCompiler.run(function (stdout) {
-      return res.status(200).json({ output: stdout });
-    });
-  } catch (e) {
-    return res.status(400).json({ success: false, error: e });
-  }
+  const mockTest = (stdout) => {
+    const expected = "hello";
+    console.log(expected === stdout.trim());
+    return stdout.trim() === expected; //* stdout has newline character so we need to compare the trimmed value
+  };
+
+  DockCompiler.run(function (stdout, error, hints) {
+    if (stdout) {
+      console.log(stdout);
+      let testResult = mockTest(stdout);
+      return res
+        .status(200)
+        .json({ output: stdout, hints: hints, success: testResult });
+    } else {
+      return res
+        .status(400)
+        .json({ output: error, hints: hints, success: false });
+    }
+  });
 });
 
 app.listen(port, () => {

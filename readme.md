@@ -12,7 +12,8 @@ x Add test client with react
 x Connect client to server
 x Refactor DockerCompile to use a success callback
 
-- Add a queue system for scalability
+- Add a queue system (redis)
+- Implement a timeout procedure
 - Work around writing to file on host filesystem to avoid overwriting from concurrent requests
 - Delete the files on container before killing
 
