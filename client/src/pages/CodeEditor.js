@@ -1,4 +1,5 @@
 import data from "../utils/starter_code.txt";
+import mock from "../utils/mock_test.txt";
 import { useEffect, useState } from "react";
 import MonacoEditor from "react-monaco-editor";
 import axios from "axios";
@@ -9,12 +10,21 @@ export const CodeEditor = () => {
   const [errors, setErrors] = useState("");
   const [hints, setHints] = useState("");
   const [result, setResult] = useState("");
+  const [mockTest, setMockTest] = useState("");
 
   const readFile = () => {
     const code = fetch(data)
       .then((d) => d.text())
       .then((text) => {
         setUserCode(text);
+      });
+  };
+
+  const readMock = () => {
+    const mockData = fetch(mock)
+      .then((i) => i.text())
+      .then((text) => {
+        setMockTest(text);
       });
   };
 
@@ -25,7 +35,7 @@ export const CodeEditor = () => {
         "http://localhost:8080/compile-test",
         {
           code: userCode,
-          lang: "Javascript",
+          lang: "Python",
         },
         {
           headers: { "Content-Type": "application/json" },
@@ -50,6 +60,7 @@ export const CodeEditor = () => {
   useEffect(() => {
     //Load starter code on render
     readFile();
+    readMock();
   }, []);
 
   return (
@@ -69,6 +80,14 @@ export const CodeEditor = () => {
         <div className="output-row">
           <h3 className="output-label">Output: </h3>
           <h3 className="output-response">{output}</h3>
+        </div>
+        <div className="output-row">
+          <h3 className="output-label">Test Result: </h3>
+          <h3 className="output-response">{result}</h3>
+        </div>
+        <div className="output-row">
+          <h3 className="output-label">Test Case: </h3>
+          <h3 className="output-response">{mockTest}</h3>
         </div>
         <div className="output-row">
           <h3 className="output-label">Test Result: </h3>

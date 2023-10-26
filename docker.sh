@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 fileName=$1
 executor=$2
 image=$3

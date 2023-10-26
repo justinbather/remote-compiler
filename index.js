@@ -80,7 +80,7 @@ app.post("/compile-test", (req, res) => {
         .json({ output: stdout, hints: hints, success: testResult });
     } else {
       return res
-        .status(400)
+        .status(200)
         .json({ output: error, hints: hints, success: false });
     }
   });

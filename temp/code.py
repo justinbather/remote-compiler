@@ -1,1 +1,3 @@
-console.log('test')
+def main():
+    print('helo'
+main()
