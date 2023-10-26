@@ -12,26 +12,26 @@ export default class DockerCompiler {
   }
 
   //* Runs the DockerCompiler build process to run a user's code upon submission
-  run() {
-    this.prepare();
+  run(success) {
+    this.prepare(success);
   }
 
   //* Prepares the files to be ran
   //* Writes user's code to a new file in /temp to be copied into the docker instance
-  prepare() {
+  prepare(success) {
     fs.writeFile(`./temp/${this.fileName}`, this.code, (err) => {
       if (err) {
         console.log("error writing to temp file, error: ", err);
       } else {
         console.log("File written successfully");
-        this.execute();
+        this.execute(success);
       }
     });
   }
 
   //* This gets executed by child process which runs the bash script docker.sh
   //* Docker.sh creates a container with the user's code to be ran by providing the file extension and executing cmd below
-  execute() {
+  execute(success) {
     let start = console.time();
     const cmd = `./docker.sh ${this.fileName} ${this.executor} ${this.dockerImage}`;
 
@@ -52,6 +52,7 @@ export default class DockerCompiler {
         if (err) {
           console.log("error occured writing output", err);
         }
+        success(stdout);
       });
       let end = console.timeEnd();
       console.log(end);

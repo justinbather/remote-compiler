@@ -1,1 +1,5 @@
-console.log('perf')
+function test() {
+    console.log('fucker')
+}
+
+test()

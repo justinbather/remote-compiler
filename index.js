@@ -5,7 +5,7 @@ import DockerCompiler from "./DockerCompiler.js";
 import { languages } from "./languages.js";
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 app.use(bodyParser.json());
 app.use(
@@ -66,11 +66,9 @@ app.post("/compile-test", (req, res) => {
   );
 
   try {
-    DockCompiler.run();
-
-    let end = console.timeEnd();
-
-    return res.status(200).json({ success: true });
+    DockCompiler.run(function (stdout) {
+      return res.status(200).json({ output: stdout });
+    });
   } catch (e) {
     return res.status(400).json({ success: false, error: e });
   }
