@@ -1,5 +1,5 @@
 function test() {
-    console.log('fucker')
+    console.log([1,2,3,4,5])
 }
 
 test()
