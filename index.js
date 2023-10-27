@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 });
 
 app.post("/compile-test", (req, res) => {
-  let start = console.time();
+  let start = performance.now();
   const code = req.body.code;
   const lang = req.body.lang;
 
@@ -39,20 +39,18 @@ app.post("/compile-test", (req, res) => {
     languages[idx].dockerImage
   );
 
-  const mockTest = (stdout) => {
-    const expected = "hello";
-    console.log(expected === stdout.trim());
-    return stdout.trim() === expected; //* stdout has newline character so we need to compare the trimmed value
-  };
-
   DockCompiler.run(function (stdout, error, hints) {
     if (stdout) {
       console.log(stdout);
       // let testResult = mockTest(stdout);
+      let end = performance.now();
+      console.log(`Complete server request took: ${end - start}ms`);
       return res
         .status(200)
         .json({ output: stdout, hints: hints, success: true });
     } else {
+      let end = performance.now();
+      console.log(`Complete server request took: ${end - start}ms`);
       return res
         .status(200)
         .json({ output: error, hints: hints, success: false });

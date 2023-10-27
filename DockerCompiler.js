@@ -1,7 +1,24 @@
 import fs from "fs";
 import { exec } from "node:child_process";
 
+/**
+ * DockerCompiler is a class that facilitates running user-submitted code within a Docker container.
+ *
+ * @class DockerCompiler
+ */
+
 export default class DockerCompiler {
+  /**
+   * Creates an instance of DockerCompiler.
+   *
+   * @constructor
+   * @param {string} code - The user's code to be executed.
+   * @param {string} lang - The programming language of the code.
+   * @param {string} executor - The executor or compiler for the code (e.g., "node").
+   * @param {string} fileExt - The file extension of the code file (e.g., ".js").
+   * @param {string} dockerImage - The Docker image to run the code.
+   */
+
   constructor(code, lang, executor, fileExt, dockerImage) {
     this.code = code;
     this.lang = lang;
@@ -11,32 +28,62 @@ export default class DockerCompiler {
     this.fileName = `code${this.fileExt}`;
   }
 
-  //* Runs the DockerCompiler build process to run a user's code upon submission
+  /**
+   * Runs the DockerCompiler build process to execute the user's code.
+   *
+   * @param {function} success - The callback function to handle the result of code execution.
+   */
   run(success) {
     this.prepare(success);
   }
 
-  //* Prepares the files to be run
-  //* Writes user's code to a new file in /temp to be copied into the docker instance
+  /**
+   * Prepares the files for execution.
+   *
+   * @param {function} success - The callback function to handle the result of code execution.
+   */
+
   prepare(success) {
-    fs.writeFile(`./temp/${this.fileName}`, this.code, (err) => {
+    // ! Temporary file name
+    //! Format: test_id.file_ext
+    const testId = 1;
+    const fileName = testId + ".js";
+    console.log(fileName);
+    exec(`cp /tests/${fileName} /temp/test.js`);
+
+    fs.appendFile(`./temp/test.js`, this.code, (err) => {
       if (err) {
         console.log("error writing to temp file, error: ", err);
+        exec(`rm ./temp/test.js`);
       } else {
         console.log("File written successfully");
-        this.execute(success);
+        try {
+          const file = fs.readFileSync("./temp/test.js", "utf-8");
+          console.log("----- temp/test.js --------");
+          console.log(file);
+          this.execute(success);
+        } catch (err) {
+          console.log(err);
+        }
       }
     });
   }
 
+  /**
+   * Executes the user's code within a Docker container and handles the result.
+   *
+   * @param {function} success - The callback function to handle the result of code execution.
+   */
+
   execute(success) {
+    const fileName = "test.js"; //! Temp
     console.time();
     let start = performance.now();
 
     let testId = "1"; //! temp var for test id to be given to script
 
-    //* This command gets ran to start docker and compilation process
-    const cmd = `./docker.sh ${this.fileName} ${this.executor} ${this.dockerImage} ${testId}`;
+    // Command to start Docker and the compilation process
+    const cmd = `./docker.sh test.js ${this.executor} ${this.dockerImage} ${testId}`;
 
     exec(cmd); //! Async
 
@@ -85,13 +132,13 @@ export default class DockerCompiler {
           console.log("success file deleted");
 
           let end = performance.now();
-          console.log(`Request took ${end - start}ms`);
+          // console.log(`Request took ${end - start}ms`);
 
           clearInterval(timer);
         }
       });
 
       console.log(`completed ${numberIntervals} interval`);
-    }, 1000); //1 second intervals
+    }, 500); //.5 second intervals
   }
 }
