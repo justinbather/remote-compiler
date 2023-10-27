@@ -36,7 +36,9 @@ export default class DockerCompiler {
     //? In bash script?
     console.time();
     let start = performance.now();
-    const cmd = `./docker.sh ${this.fileName} ${this.executor} ${this.dockerImage}`;
+
+    let testId = "1"; //! temp var for test id to be given to script
+    const cmd = `./docker.sh ${this.fileName} ${this.executor} ${this.dockerImage} ${testId}`;
 
     //runs cmd with timeout, waiting for a success for error file to be written by the container to then return data in callback
     exec(cmd); //! Async
