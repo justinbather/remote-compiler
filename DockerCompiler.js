@@ -35,31 +35,86 @@ export default class DockerCompiler {
     //! Implement a timeout
     //? In bash script?
     console.time();
+    let start = performance.now();
     const cmd = `./docker.sh ${this.fileName} ${this.executor} ${this.dockerImage}`;
 
-    exec(cmd, (error, stdout, stderr) => {
-      let data = "";
-      let errorData = "";
-      let hints = ""; // In case there is no error or stdout we should make sure the user
-      // knows to call the function in the code
+    //runs cmd with timeout, waiting for a success for error file to be written by the container to then return data in callback
+    exec(cmd); //! Async
 
-      if (error) {
-        //! Log error here
-        console.log(error);
-      }
+    const timeout = 5;
+    let numberIntervals = 0;
 
-      if (stderr) {
-        errorData += stderr;
-      }
+    let timer = setInterval(() => {
+      numberIntervals++;
+      console.log(`Interval number: ${numberIntervals}`);
 
-      if (stdout) {
-        data = stdout;
-      } else if (!error && !stderr) {
-        hints = "Make sure you call your function!";
-      }
+      fs.readFile("./temp/success.txt", "utf-8", (err, data) => {
+        if (err && numberIntervals < timeout) {
+          // console.log(err);
+          //* No success.txt found, look for errors.txt
+          fs.readFile("./temp/errors.txt", "utf-8", (err, data) => {
+            if (err) {
+              //* No error.txt found, keep going
+              return;
+            } else {
+              //* Found error.txt, call the CB with error data read from file
+              success(data); //error file found, return error info
 
-      success(data, errorData, hints);
-      console.timeEnd();
-    });
+              console.log("Found error file");
+              exec("rm ./temp/errors.txt");
+              console.log("error file deleted");
+              let end = performance.now();
+              console.log(`Request took ${end - start}ms`);
+              clearInterval(timer);
+              // return;
+            }
+          });
+
+          return;
+        } else if (err && numberIntervals >= timeout) {
+          //* Timeout is up, return timeout error
+          console.log("Request timed out. Time limit exceeded");
+          success("Compilation Timeout Occured: Timelimit exceeded.");
+          clearInterval(timer);
+        } else if (data) {
+          //* found success.txt, return the file data to CB
+          success("", data, "");
+          console.log("Found success file");
+          exec("rm ./temp/success.txt");
+          console.log("success file deleted");
+          let end = performance.now();
+          console.log(`Request took ${end - start}ms`);
+          clearInterval(timer);
+          // return;
+        }
+      });
+
+      console.log(`completed ${numberIntervals} interval`);
+    }, 1000); //1 seconds
+
+    // exec(cmd, (error, stdout, stderr) => {
+    //   let data = "";
+    //   let errorData = "";
+    //   let hints = ""; // In case there is no error or stdout we should make sure the user
+    //   // knows to call the function in the code
+
+    //   if (error) {
+    //     //! Log error here
+    //     console.log(error);
+    //   }
+
+    //   if (stderr) {
+    //     errorData += stderr;
+    //   }
+
+    //   if (stdout) {
+    //     data = stdout;
+    //   } else if (!error && !stderr) {
+    //     hints = "Make sure you call your function!";
+    //   }
+
+    //   success(data, errorData, hints);
+    //   console.timeEnd();
+    // });
   }
 }

@@ -6,7 +6,9 @@ image=$3
 
 cont=$(docker run -it -d -v "$(pwd)"/temp:/temp -w /temp "$image")
   
-  docker exec "$cont" "$executor" "$fileName"
+  # docker exec "$cont" "$executor" "$fileName"
+
+  docker exec "$cont" ./runner.sh
 
   
   docker kill $cont &> /dev/null

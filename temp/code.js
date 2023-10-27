@@ -1,5 +1,5 @@
 function test() {
-    return 'hello'
+    return '[1,2,3,4]'
 }
 
 console.log(test())
