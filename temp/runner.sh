@@ -1,12 +1,28 @@
 #!/bin/bash
 
-declare -A inputs=( [1]=hello [2]=hi )
+# declare -A inputs=( [1]=hello [2]=hi )
 
-declare -A expected=( [1]=hello [2]=hi )
+# declare -A expected=( [1]=hello [2]=hi )
 
-for key in "${!inputs[@]}"; do
-    echo "$key"
-    echo "${inputs[$key]}"
-    echo "${expected[$key]}"
+INFILE=$(pwd)/tests.txt
 
-done
+
+# cat "$INFILE" | while read LINE
+# do  
+#     echo "$LINE"
+#     IFS=, read -ra values <<< "$LINE"
+#     for i in "${values[@]}"
+#     do  
+#         echo "$i"
+#     done
+# done
+
+while IFS='' read -r LINE || [ -n "${LINE}" ]; do
+
+    IFS=, read -ra values <<< "$LINE"
+    for i in "${values[@]}"
+    do  
+        echo "$i"
+    done
+
+done < "$INFILE"
