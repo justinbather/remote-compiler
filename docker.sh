@@ -4,6 +4,8 @@ fileName=$1
 executor=$2
 image=$3
 
+  cp /tests/1.txt /temp/test.txt
+
 cont=$(docker run -it -d -v "$(pwd)"/temp:/temp -w /temp "$image")
   
   # docker exec "$cont" "$executor" "$fileName"
