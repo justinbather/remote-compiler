@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Called by DockerCompiler.js:execute() 
+# Usage ./docker.sh file.txt node node:20 4
+
+# Copies necessary files to /temp and spins up docker container with /temp mounted for code compilation
+# Once running executes runner.sh script to carry out compilation and testing
+# after process is done and exits, we kill and remove the container
+
+
 fileName=$1
 executor=$2
 image=$3
