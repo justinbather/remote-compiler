@@ -46,4 +46,4 @@ done < "$INFILE"
 mv output.txt success.txt
 
 rm test.txt
-rm temp/test.js
+rm test.js

@@ -49,25 +49,35 @@ export default class DockerCompiler {
     const testId = 1;
     const fileName = testId + ".js";
     console.log(fileName);
-    exec(`cp /tests/${fileName} /temp/test.js`);
+    // exec(`cp ./tests/${fileName} ./temp/test.js`);
 
-    fs.appendFile(`./temp/test.js`, this.code, (err) => {
-      if (err) {
-        console.log("error writing to temp file, error: ", err);
-        exec(`rm ./temp/test.js`);
-      } else {
-        console.log("File written successfully");
-        try {
-          const file = fs.readFileSync("./temp/test.js", "utf-8");
-          console.log("----- temp/test.js --------");
-          console.log(file);
-          this.execute(success);
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    });
+    fs.copyFileSync(`./tests/${fileName}`, `./tests/test.js`);
+
+    fs.appendFileSync(`./tests/test.js`, this.code);
+
+    console.log("File written successfully");
+
+    // fs.copyFileSync(`./tests/${fileName}`, `./temp/test.js`);
+
+    this.execute(success);
   }
+
+  // fs.appendFile(`./tests/test.js`, this.code, (err) => {
+  //   if (err) {
+  //     console.log("error writing to temp file, error: ", err);
+  //     exec(`rm ./temp/test.js`);
+  //   } else {
+  //     console.log("File written successfully");
+  //     try {
+  //       const file = fs.readFileSync("./test/test.js", "utf-8");
+  //       console.log("----- temp/test.js --------");
+  //       console.log(file);
+  //       this.execute(success);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   }
+  // });
 
   /**
    * Executes the user's code within a Docker container and handles the result.
