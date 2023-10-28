@@ -47,7 +47,7 @@ export default class DockerCompiler {
     // ! Temporary file name
     //! Format: test_id.file_ext
     const testId = 1;
-    const fileName = testId + ".js";
+    const fileName = "1.js";
     console.log(fileName);
 
     fs.copyFileSync(`./tests/${fileName}`, `./tests/test.js`);
@@ -73,7 +73,7 @@ export default class DockerCompiler {
     let testId = "1"; //! temp var for test id to be given to script
 
     // Command to start Docker and the compilation process
-    const cmd = `./docker.sh test.js ${this.executor} ${this.dockerImage} ${testId}`;
+    const cmd = `./docker.sh ${fileName} ${this.executor} ${this.dockerImage} ${testId}`;
 
     exec(cmd); //! Async
 
@@ -114,7 +114,7 @@ export default class DockerCompiler {
               success(data);
 
               console.log("Found stderr.log, compilation error in user code");
-              exec("rm ./temp/stderr.log");
+              // exec("rm ./temp/stderr.log");
 
               clearInterval(timer);
               return;

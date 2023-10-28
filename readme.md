@@ -19,6 +19,8 @@ x Refactor DockerCompile to use a success callback
 - Tests:
   x create a file with tests
   x import the usercode file and invoke the function
+  - Need to figure out a new way to facilitate testing, the .txt system breaks down when we need to pass in an array or multiple arguments.
+    Might be best to have each problem have a test file for each language? For now?
 
 More languages will be added once proof of concept is more refined, JS and Python are currently available by changing
 the value provided to the server in the Monaco Editor component and axios request.

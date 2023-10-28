@@ -22,11 +22,13 @@ INFILE=$(pwd)/test.txt
 while IFS='' read -r LINE || [ -n "${LINE}" ]; do
 
     IFS=, read -ra values <<< "$LINE"
+    echo "$values"
     test_id="${values[0]}"
     input="${values[1]}"
     expected="${values[2]}"
+    echo "$input"
 
-    x=$(node test.js "$input" 2> stderr.log) 
+    x=$(node test.js "$input"  2> stderr.log) 
     
     # we need to exit out if stderr is printed to log
 

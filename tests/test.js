@@ -4,4 +4,3 @@ console.log(test(arg));
 function test(input) {
     return input
 }
-
