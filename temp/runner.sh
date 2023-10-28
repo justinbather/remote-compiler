@@ -27,11 +27,8 @@ while IFS='' read -r LINE || [ -n "${LINE}" ]; do
     expected="${values[2]}"
 
     x=$(node test.js "$input" 2> stderr.log) 
-    # if [ "$?" -ne 0 ] then
-    #     echo "failed to compile, exiting with 2"
-    #     echo "check stderr.log for info on the errors"
-    #     exit 2
-    # fi
+    
+    # we need to exit out if stderr is printed to log
 
     
     # Compare expected output from test with user code result
@@ -47,5 +44,4 @@ done < "$INFILE"
 
 mv output.txt success.txt
 
-rm test.txt
-rm test.js
+
