@@ -25,11 +25,10 @@ while IFS='' read -r LINE || [ -n "${LINE}" ]; do
     test_id="${values[0]}"
     input="${values[1]}"
     expected="${values[2]}"
-    echo $input
-    echo "expected: $expected"
-    x=$(node test.js "$input")
-    echo "recieved: $x"
 
+    x=$(node test.js "$input" 2> stderr.log) 
+    
+    # we need to exit out if stderr is printed to log
 
     
     # Compare expected output from test with user code result
@@ -45,5 +44,4 @@ done < "$INFILE"
 
 mv output.txt success.txt
 
-rm test.txt
-rm test.js
+
