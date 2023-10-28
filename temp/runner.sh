@@ -25,11 +25,13 @@ while IFS='' read -r LINE || [ -n "${LINE}" ]; do
     test_id="${values[0]}"
     input="${values[1]}"
     expected="${values[2]}"
-    echo $input
-    echo "expected: $expected"
-    x=$(node test.js "$input")
-    echo "recieved: $x"
 
+    x=$(node test.js "$input" 2> stderr.log) 
+    # if [ "$?" -ne 0 ] then
+    #     echo "failed to compile, exiting with 2"
+    #     echo "check stderr.log for info on the errors"
+    #     exit 2
+    # fi
 
     
     # Compare expected output from test with user code result

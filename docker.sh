@@ -17,18 +17,10 @@ cp ./tests/$testid.txt ./temp/test.txt
 cp ./tests/$fileName ./temp/test.js
 
 cont=$(docker run -it -d -v "$(pwd)"/temp:/temp -w /temp "$image")
-  
-  #docker exec "$cont" "$executor" "$fileName"
 
   docker exec "$cont" ./runner.sh
 
-  
+  output=$(docker logs "$cont")
+  echo "output: $output"
   docker kill $cont &> /dev/null
   docker rm $cont &> /dev/null
-
-  
-
-#   output=$(docker logs "$cont")
-  # docker stop "$cont" &> /dev/null
-
-#   add timeout?

@@ -49,7 +49,6 @@ export default class DockerCompiler {
     const testId = 1;
     const fileName = testId + ".js";
     console.log(fileName);
-    // exec(`cp ./tests/${fileName} ./temp/test.js`);
 
     fs.copyFileSync(`./tests/${fileName}`, `./tests/test.js`);
 
@@ -57,27 +56,8 @@ export default class DockerCompiler {
 
     console.log("File written successfully");
 
-    // fs.copyFileSync(`./tests/${fileName}`, `./temp/test.js`);
-
     this.execute(success);
   }
-
-  // fs.appendFile(`./tests/test.js`, this.code, (err) => {
-  //   if (err) {
-  //     console.log("error writing to temp file, error: ", err);
-  //     exec(`rm ./temp/test.js`);
-  //   } else {
-  //     console.log("File written successfully");
-  //     try {
-  //       const file = fs.readFileSync("./test/test.js", "utf-8");
-  //       console.log("----- temp/test.js --------");
-  //       console.log(file);
-  //       this.execute(success);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-  // });
 
   /**
    * Executes the user's code within a Docker container and handles the result.
@@ -108,26 +88,36 @@ export default class DockerCompiler {
         if (err && numberIntervals < timeout) {
           //* No success.txt found, look for errors.txt
 
-          fs.readFile("./temp/errors.txt", "utf-8", (err, data) => {
+          fs.readFile("./temp/stderr.log", "utf-8", (err, data) => {
             if (err) {
-              //* No error.txt found, keep going
-              return;
+              fs.readFile("./temp/errors.txt", "utf-8", (err, data) => {
+                if (err) {
+                  //* No error.txt found, keep going
+                  return;
+                } else {
+                  //* Found error.txt, call the CB with error data read from file
+                  success(data);
+
+                  console.log("Found error file");
+                  exec("rm ./temp/errors.txt");
+                  console.log("error file deleted");
+
+                  let end = performance.now();
+                  console.log(`Request took ${end - start}ms`);
+
+                  clearInterval(timer);
+                }
+              });
             } else {
-              //* Found error.txt, call the CB with error data read from file
               success(data);
 
-              console.log("Found error file");
-              exec("rm ./temp/errors.txt");
-              console.log("error file deleted");
-
-              let end = performance.now();
-              console.log(`Request took ${end - start}ms`);
+              console.log("Found stderr.log, compilation error in user code");
+              exec("rm ./temp/stderr.log");
 
               clearInterval(timer);
+              return;
             }
           });
-
-          return;
         } else if (err && numberIntervals >= timeout) {
           //* Timeout is up, return timeout error
 
