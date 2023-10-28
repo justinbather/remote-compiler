@@ -35,7 +35,7 @@ export const CodeEditor = () => {
         "http://localhost:8080/compile-test",
         {
           code: userCode,
-          lang: "Python",
+          lang: "Javascript",
         },
         {
           headers: { "Content-Type": "application/json" },
