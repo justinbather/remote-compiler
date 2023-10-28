@@ -41,8 +41,8 @@ app.post("/compile-test", (req, res) => {
 
   DockCompiler.run(function (stdout, error, hints) {
     if (stdout) {
-      console.log(stdout);
-      // let testResult = mockTest(stdout);
+      console.log("stdout: ", stdout);
+
       let end = performance.now();
       console.log(`Complete server request took: ${end - start}ms`);
       return res
