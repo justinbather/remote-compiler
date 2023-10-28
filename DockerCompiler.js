@@ -80,6 +80,8 @@ export default class DockerCompiler {
     const timeout = 5;
     let numberIntervals = 0;
 
+    //* Timer to poll checking for stderr.log, errors.txt, or success.txt from docker container.
+
     let timer = setInterval(() => {
       numberIntervals++;
       console.log(`Interval number: ${numberIntervals}`);
@@ -139,6 +141,6 @@ export default class DockerCompiler {
       });
 
       console.log(`completed ${numberIntervals} interval`);
-    }, 1000); //Max 5, 1 second intervals
+    }, 1000); // 1 second intervals
   }
 }
