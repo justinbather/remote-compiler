@@ -47,7 +47,7 @@ export default class DockerCompiler {
     // ! Temporary file name
     //! Format: test_id.file_ext
     const testId = 1;
-    const fileName = "1.js";
+    const fileName = "twoSum.js";
     console.log(fileName);
 
     fs.copyFileSync(`./tests/${fileName}`, `./tests/test.js`);

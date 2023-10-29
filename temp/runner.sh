@@ -21,14 +21,24 @@ INFILE=$(pwd)/test.txt
 #Read the INFILE, for each line (test case), store the values and save the result of the users code into a variable
 while IFS='' read -r LINE || [ -n "${LINE}" ]; do
 
-    IFS=, read -ra values <<< "$LINE"
-    echo "$values"
-    test_id="${values[0]}"
-    input="${values[1]}"
-    expected="${values[2]}"
-    echo "$input"
+    IFS=' ' read -ra values <<< "$LINE"
 
-    x=$(node test.js "$input"  2> stderr.log) 
+    test_id="${values[0]}"
+
+    expected="${values[1]}"
+
+
+    input=()
+
+
+
+    for value in "${values[@]:2}"
+        do
+        input+=("$value")
+        
+        done
+echo "$input"
+    x=$(node test.js 2> stderr.log) 
     
     # we need to exit out if stderr is printed to log
 

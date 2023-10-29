@@ -13,7 +13,7 @@ executor=$2
 image=$3
 testid=$4
 
-cp ./tests/$testid.txt ./temp/test.txt
+cp ./tests/twoSum.txt ./temp/test.txt
 cp ./tests/$fileName ./temp/test.js
 
 cont=$(docker run -it -d -v "$(pwd)"/temp:/temp -w /temp "$image")
