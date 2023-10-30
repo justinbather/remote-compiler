@@ -13,8 +13,9 @@ executor=$2
 image=$3
 testid=$4
 
-cp ./tests/twoSum.txt ./temp/test.txt
-cp ./tests/$fileName ./temp/test.js
+cp ./tests/twoSum.output.txt ./temp/test.txt
+cp ./tests/$fileName ./temp/test.mjs
+cp ./tests/twoSum.input.mjs ./temp/twoSum.input.mjs
 
 cont=$(docker run -it -d -v "$(pwd)"/temp:/temp -w /temp "$image")
 
@@ -22,5 +23,6 @@ cont=$(docker run -it -d -v "$(pwd)"/temp:/temp -w /temp "$image")
 
   output=$(docker logs "$cont")
   echo "output: $output"
+
   docker kill $cont &> /dev/null
   docker rm $cont &> /dev/null

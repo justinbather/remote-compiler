@@ -47,12 +47,12 @@ export default class DockerCompiler {
     // ! Temporary file name
     //! Format: test_id.file_ext
     const testId = 1;
-    const fileName = "twoSum.js";
+    const fileName = "twoSum.mjs";
     console.log(fileName);
 
-    fs.copyFileSync(`./tests/${fileName}`, `./tests/test.js`);
+    fs.copyFileSync(`./tests/${fileName}`, `./tests/test.mjs`);
 
-    fs.appendFileSync(`./tests/test.js`, this.code);
+    fs.appendFileSync(`./tests/test.mjs`, this.code);
 
     console.log("File written successfully");
 
@@ -66,7 +66,7 @@ export default class DockerCompiler {
    */
 
   execute(success) {
-    const fileName = "test.js"; //! Temp
+    const fileName = "test.mjs"; //! Temp
     console.time();
     let start = performance.now();
 
@@ -90,34 +90,21 @@ export default class DockerCompiler {
         if (err && numberIntervals < timeout) {
           //* No success.txt found, look for errors.txt
 
-          fs.readFile("./temp/stderr.log", "utf-8", (err, data) => {
+          fs.readFile("./temp/errors.txt", "utf-8", (err, data) => {
             if (err) {
-              fs.readFile("./temp/errors.txt", "utf-8", (err, data) => {
-                if (err) {
-                  //* No error.txt found, keep going
-                  return;
-                } else {
-                  //* Found error.txt, call the CB with error data read from file
-                  success(data);
-
-                  console.log("Found error file");
-                  exec("rm ./temp/errors.txt");
-                  console.log("error file deleted");
-
-                  let end = performance.now();
-                  console.log(`Request took ${end - start}ms`);
-
-                  clearInterval(timer);
-                }
-              });
-            } else {
-              success(data);
-
-              console.log("Found stderr.log, compilation error in user code");
-              // exec("rm ./temp/stderr.log");
-
-              clearInterval(timer);
+              //* No error.txt found, keep going
               return;
+            } else {
+              //* Found error.txt, call the CB with error data read from file
+
+              console.log("Found error file");
+              exec("rm ./temp/errors.txt");
+              console.log("error file deleted");
+
+              let end = performance.now();
+              console.log(`Request took ${end - start}ms`);
+              success(data);
+              clearInterval(timer);
             }
           });
         } else if (err && numberIntervals >= timeout) {
@@ -142,5 +129,12 @@ export default class DockerCompiler {
 
       console.log(`completed ${numberIntervals} interval`);
     }, 1000); // 1 second intervals
+  }
+
+  cleanup() {
+    exec("rm ./temp/stderr.log");
+    exec("rm ./temp/test.txt/");
+    exec("rm ./temp/twoSum.input.mjs");
+    exec("rm test.mjs");
   }
 }

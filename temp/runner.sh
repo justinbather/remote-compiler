@@ -11,49 +11,53 @@
 
 #File to read test cases from
 # Contains test_id,input,expected_output
-INFILE=$(pwd)/test.txt 
+INFILE=$(pwd)/test.txt
 
+# Execute the 'test.mjs' script and capture its output in 'x'
+x=$(node test.mjs 2> stderr.log)
+# Check if stderr.log is not empty (contains error output)
+if [ -s "stderr.log" ]; then
+    # Print the error messages and exit
+    echo "Error in test.mjs: $(cat stderr.log)"
+    mv stderr.log errors.txt
+    exit 1
+fi
 
+# Initialize line numbers
+line_number=1
 
-
-
-
-#Read the INFILE, for each line (test case), store the values and save the result of the users code into a variable
 while IFS='' read -r LINE || [ -n "${LINE}" ]; do
-
-    IFS=' ' read -ra values <<< "$LINE"
-
+    IFS='-' read -ra values <<< "$LINE"
     test_id="${values[0]}"
-
     expected="${values[1]}"
 
+    # Retrieve the corresponding line from 'x' (stdout)
+    x_line=$(sed "${line_number}q;d" <<< "$x")
 
-    input=()
+    # We need to exit out if stderr is printed to log
+    if [ -n "$(cat stderr.log)" ]; then
+        echo "Error in test.mjs: $(cat stderr.log)"
+        mv stderr.log errors.txt
+        exit 1
+    fi
 
-
-
-    for value in "${values[@]:2}"
-        do
-        input+=("$value")
-        
-        done
-echo "$input"
-    x=$(node test.js 2> stderr.log) 
-    
-    # we need to exit out if stderr is printed to log
-
-    
-    # Compare expected output from test with user code result
-    if [[ "$x" == "$expected" ]]; then
-    echo "$test_id,$input,$expected,$x" >> output.txt
-    else 
-        echo "failed: $test_id,$input,$expected,$x" >> output.txt
+    # Compare expected output from the test.mjs with user code result
+    if [[ "$x_line" == "$expected" ]]; then
+        echo "$test_id,$x_line,$expected" >> output.txt
+    else
+        echo "failed: $test_id,$x_line,$expected" >> output.txt
         mv output.txt errors.txt
         exit 1
     fi
 
+    # Increment the line number for the next comparison
+    ((line_number++))
 done < "$INFILE"
 
 mv output.txt success.txt
 
-
+#Clean up
+rm stderr.log
+rm test.mjs
+rm test.txt
+rm *.input.mjs
