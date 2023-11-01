@@ -19,13 +19,28 @@ export default class DockerCompiler {
    * @param {string} dockerImage - The Docker image to run the code.
    */
 
-  constructor(code, lang, executor, fileExt, dockerImage) {
+  constructor(
+    code,
+    lang,
+    executor,
+    fileExt,
+    dockerImage,
+    problem,
+    input,
+    output,
+    caller
+  ) {
     this.code = code;
     this.lang = lang;
     this.executor = executor;
     this.fileExt = fileExt;
     this.dockerImage = dockerImage;
-    this.fileName = `code${this.fileExt}`;
+    this.problem = problem;
+    this.input = input;
+    this.output = output;
+    this.caller = caller;
+    this.fileName = `${this.problem}${this.fileExt}`;
+    this.inputFile = `${this.problem}.input${this.fileExt}`;
   }
 
   /**
@@ -47,12 +62,16 @@ export default class DockerCompiler {
     // ! Temporary file name
     //! Format: test_id.file_ext
     const testId = 1;
-    const fileName = "twoSum.mjs";
-    console.log(fileName);
 
-    fs.copyFileSync(`./tests/${fileName}`, `./tests/test.mjs`);
+    fs.writeFileSync(`./tests/${this.fileName}`, this.code);
+    // fs.copyFileSync(`./tests/${this.fileName}`, `./tests/test.mjs`);
 
-    fs.appendFileSync(`./tests/test.mjs`, this.code);
+    fs.appendFileSync(`./tests/${this.fileName}`, this.caller);
+    fs.writeFileSync(
+      `./tests/${this.problem}.input${this.fileExt}`,
+      this.input
+    );
+    fs.writeFileSync(`./tests/${this.problem}.output.txt`, this.output);
 
     console.log("File written successfully");
 
@@ -73,7 +92,7 @@ export default class DockerCompiler {
     let testId = "1"; //! temp var for test id to be given to script
 
     // Command to start Docker and the compilation process
-    const cmd = `./docker.sh ${fileName} ${this.executor} ${this.dockerImage} ${testId}`;
+    const cmd = `./docker.sh ${this.fileName} ${this.executor} ${this.dockerImage} ${this.fileExt} ${this.problem}.output.txt ${this.problem}.input${this.fileExt}`;
 
     exec(cmd); //! Async
 

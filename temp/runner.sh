@@ -11,10 +11,12 @@
 
 #File to read test cases from
 # Contains test_id,input,expected_output
+fileName=$1
+
 INFILE=$(pwd)/test.txt
 
 # Execute the 'test.mjs' script and capture its output in 'x'
-x=$(node test.mjs 2> stderr.log)
+x=$(node $fileName 2> stderr.log)
 # Check if stderr.log is not empty (contains error output)
 if [ -s "stderr.log" ]; then
     # Print the error messages and exit

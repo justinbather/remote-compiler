@@ -6,8 +6,8 @@ export const languages = [
     dockerImage: "python:3",
   },
   {
-    lang: "Javascript",
-    fileExt: ".js",
+    lang: "javascript",
+    fileExt: ".mjs",
     executor: "node",
     dockerImage: "node:20",
   },

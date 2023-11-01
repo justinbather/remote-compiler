@@ -11,15 +11,17 @@
 fileName=$1
 executor=$2
 image=$3
-testid=$4
+fileExt=$4
+output=$5
+input=$6
 
-cp ./tests/twoSum.output.txt ./temp/test.txt
-cp ./tests/$fileName ./temp/test.mjs
-cp ./tests/twoSum.input.mjs ./temp/twoSum.input.mjs
+cp ./tests/$output ./temp/test.txt
+cp ./tests/$fileName ./temp/$fileName
+cp ./tests/$input ./temp/$input
 
 cont=$(docker run -it -d -v "$(pwd)"/temp:/temp -w /temp "$image")
 
-  docker exec "$cont" ./runner.sh
+  docker exec "$cont" ./runner.sh $fileName
 
   output=$(docker logs "$cont")
   echo "output: $output"

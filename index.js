@@ -5,7 +5,7 @@ import DockerCompiler from "./DockerCompiler.js";
 import { languages } from "./languages.js";
 
 const app = express();
-const port = 8080;
+const port = 5050;
 
 app.use(bodyParser.json());
 app.use(
@@ -26,17 +26,21 @@ app.use((req, res, next) => {
 app.post("/compile-test", (req, res) => {
   let start = performance.now();
   const code = req.body.code;
-  const lang = req.body.lang;
+  const problem = req.body.problem;
 
   //* Grab index in languages array so we know how to run the code in the container
-  let idx = languages.findIndex((el) => el.lang === lang);
+  let idx = languages.findIndex((el) => el.lang === problem.language);
 
   let DockCompiler = new DockerCompiler(
     code,
     languages[idx].lang,
     languages[idx].executor,
     languages[idx].fileExt,
-    languages[idx].dockerImage
+    languages[idx].dockerImage,
+    problem.filePrefix,
+    problem.inputCode,
+    problem.output,
+    problem.callerCode
   );
 
   DockCompiler.run(function (stdout, error, hints) {
@@ -45,17 +49,22 @@ app.post("/compile-test", (req, res) => {
 
       let end = performance.now();
       console.log(`Complete server request took: ${end - start}ms`);
+      console.log("sending response1");
       return res
+
         .status(200)
         .json({ output: stdout, hints: hints, success: true });
     } else {
       let end = performance.now();
       console.log(`Complete server request took: ${end - start}ms`);
-      return res
-        .status(200)
-        .json({ output: error, hints: hints, success: false });
+      console.log("sending response2");
+      res.status(200).json({ output: error, hints: hints, success: false });
     }
   });
+});
+
+app.post("/test", (req, res) => {
+  console.log(req.body);
 });
 
 app.listen(port, () => {
