@@ -20,6 +20,7 @@ export default class DockerCompiler {
    */
 
   constructor(
+    jobId,
     code,
     lang,
     executor,
@@ -30,6 +31,7 @@ export default class DockerCompiler {
     output,
     caller
   ) {
+    this.jobId = jobId;
     this.code = code;
     this.lang = lang;
     this.executor = executor;
