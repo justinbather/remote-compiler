@@ -96,7 +96,7 @@ export default class DockerCompiler {
 
     exec(cmd); //! Async
 
-    const timeout = 5;
+    const timeout = 10;
     let numberIntervals = 0;
 
     //* Timer to poll checking for stderr.log, errors.txt, or success.txt from docker container.
@@ -122,7 +122,7 @@ export default class DockerCompiler {
 
               let end = performance.now();
               console.log(`Request took ${end - start}ms`);
-              success(data);
+              success("", data, false);
               clearInterval(timer);
             }
           });
@@ -130,11 +130,15 @@ export default class DockerCompiler {
           //* Timeout is up, return timeout error
 
           console.log("Request timed out. Time limit exceeded");
-          success("Compilation Timeout Occured: Timelimit exceeded.");
+          success(
+            "",
+            "Compilation Timeout Occured: Timelimit exceeded.",
+            false
+          );
           clearInterval(timer);
         } else if (data) {
           //* found success.txt, return the file data to CB
-          success("", data, "");
+          success("all tests passed!", data, true);
           console.log("Found success file");
           exec("rm ./temp/success.txt");
           console.log("success file deleted");

@@ -46,8 +46,11 @@ while IFS='' read -r LINE || [ -n "${LINE}" ]; do
     # Compare expected output from the test.mjs with user code result
     if [[ "$x_line" == "$expected" ]]; then
         echo "$test_id,$x_line,$expected" >> output.txt
+
     else
-        echo "failed: $test_id,$x_line,$expected" >> output.txt
+        echo "expected -> $expected" >> output.txt
+
+        echo "returned -> $x_line" >> output.txt
         mv output.txt errors.txt
         exit 1
     fi

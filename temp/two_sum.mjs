@@ -1,5 +1,5 @@
 function twoSum(nums, target) { 
-      let mp = new Map()
+let mp = new Map()
 
   for (let i=0; i<nums.length; i++){
     let diff = target - nums[i]
@@ -9,7 +9,6 @@ function twoSum(nums, target) {
           }
      mp.set(nums[i], i)
 }
-
 };import input from './two_sum.input.mjs';
 input.forEach((input) => { 
   console.log(twoSum(input[0], input[1]));});
