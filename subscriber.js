@@ -2,14 +2,18 @@ import amqp from "amqplib/callback_api.js";
 import axios from "axios";
 import DockerCompiler from "./DockerCompiler.js";
 import { languages } from "./languages.js";
+import 'dotenv/config';
 
 export const subscribe = async () => {
-  amqp.connect("amqp://127.0.0.1", function (error, connection) {
+  const url = process.env.AMQP_URL || "amqp://127.0.0.1"
+  const managerUrl = process.env.MANAGER_URL || 'http://localhost:7070'
+  amqp.connect(url, function(error, connection) {
     if (error) {
+      console.log('error connecting to task queue')
       throw error;
     }
 
-    connection.createChannel(function (error, channel) {
+    connection.createChannel(function(error, channel) {
       if (error) {
         throw error;
       }
@@ -23,15 +27,14 @@ export const subscribe = async () => {
 
       channel.consume(
         queue,
-        function (msg) {
-          console.log(typeof msg);
-
+        function(msg) {
           const data = JSON.parse(msg.content);
-          console.log(data.problem);
+          console.log('worker data', data)
           let idx = languages.findIndex(
             (el) => el.lang === data.problem.language
           );
 
+          console.log(idx)
           let DockCompiler = new DockerCompiler(
             data.jobId,
             data.code,
@@ -45,11 +48,11 @@ export const subscribe = async () => {
             data.problem.callerCode
           );
 
-          DockCompiler.run(function (stdout, error, success) {
+          DockCompiler.run(function(stdout, error, success) {
             if (success) {
               console.log("success, patching to manager");
               axios
-                .patch("http://localhost:7070/compile", {
+                .patch(`${managerUrl}/compile`, {
                   jobId: DockCompiler.jobId,
                   update: { status: "completed", output: stdout },
                 })
@@ -64,7 +67,7 @@ export const subscribe = async () => {
                 });
             } else {
               axios
-                .patch("http://localhost:7070/compile", {
+                .patch(`${managerUrl}/compile`, {
                   jobId: DockCompiler.jobId,
                   update: { status: "failed", output: error },
                 })

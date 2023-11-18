@@ -4,9 +4,10 @@ import cors from "cors";
 import DockerCompiler from "./DockerCompiler.js";
 import { languages } from "./languages.js";
 import { subscribe } from "./subscriber.js";
+import 'dotenv/config'
 
 const app = express();
-const port = 5050;
+const port = process.env.PORT || 5050;
 
 app.use(bodyParser.json());
 app.use(
