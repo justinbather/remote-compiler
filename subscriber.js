@@ -57,7 +57,7 @@ export const subscribe = async () => {
                   update: { status: "completed", output: stdout },
                 })
                 .then((res) => {
-                  console.log(res);
+                  console.log('Sent successful update to manager');
                 })
                 .catch((err) => {
                   console.error(
@@ -72,7 +72,7 @@ export const subscribe = async () => {
                   update: { status: "failed", output: error },
                 })
                 .then((res) => {
-                  console.log(res);
+                  console.log('Sent error message to manager');
                 })
                 .catch((err) => {
                   console.error(
