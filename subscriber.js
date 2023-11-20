@@ -5,7 +5,7 @@ import { languages } from "./languages.js";
 import 'dotenv/config';
 
 export const subscribe = async () => {
-  const url = process.env.AMQP_URL || "amqp://127.0.0.1"
+  const url = process.env.CLOUDAMQP_URL || "amqp://127.0.0.1"
   const managerUrl = process.env.MANAGER_URL || 'http://localhost:7070'
   amqp.connect(url, function(error, connection) {
     if (error) {
