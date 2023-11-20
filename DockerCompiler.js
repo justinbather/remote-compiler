@@ -98,6 +98,7 @@ export default class DockerCompiler {
 
     exec(cmd); //! Async
 
+    console.log('spawned docker')
     const timeout = 10;
     let numberIntervals = 0;
 
