@@ -154,7 +154,7 @@ export default class DockerCompiler {
       });
 
       console.log(`completed ${numberIntervals} interval`);
-    }, 1000); // 1 second intervals
+    }, 2000); // 1 second intervals
   }
 
   cleanup() {
