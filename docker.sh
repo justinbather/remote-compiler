@@ -20,7 +20,7 @@ cp ./tests/$input ./temp/$input
 
 cont=$(docker run -it -d -v "$(pwd)"/temp:/temp -w /temp "$image")
 
-sudo docker exec "$cont" ./runner.sh $fileName
+docker exec "$cont" ./runner.sh $fileName
 
 output=$(docker logs "$cont")
 echo "output: $output"
