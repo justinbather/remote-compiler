@@ -1,2 +1,2 @@
-let input = [121, -121, 10];
- export default input;
+let input = [121,-121, 10];
+export default input;

@@ -61,21 +61,14 @@ export default class DockerCompiler {
    */
 
   prepare(success) {
-    // ! Temporary file name
-    //! Format: test_id.file_ext
-    const testId = 1;
 
     fs.writeFileSync(`./tests/${this.fileName}`, this.code);
-    // fs.copyFileSync(`./tests/${this.fileName}`, `./tests/test.mjs`);
-
     fs.appendFileSync(`./tests/${this.fileName}`, this.caller);
     fs.writeFileSync(
       `./tests/${this.problem}.input${this.fileExt}`,
       this.input
     );
     fs.writeFileSync(`./tests/${this.problem}.output.txt`, this.output);
-
-    console.log("File written successfully");
 
     this.execute(success);
   }
@@ -87,11 +80,9 @@ export default class DockerCompiler {
    */
 
   execute(success) {
-    const fileName = "test.mjs"; //! Temp
     console.time();
     let start = performance.now();
 
-    let testId = "1"; //! temp var for test id to be given to script
 
     // Command to start Docker and the compilation process
     const cmd = `./docker.sh ${this.fileName} ${this.executor} ${this.dockerImage} ${this.fileExt} ${this.problem}.output.txt ${this.problem}.input${this.fileExt}`;
@@ -106,7 +97,6 @@ export default class DockerCompiler {
 
     let timer = setInterval(() => {
       numberIntervals++;
-      console.log(`Interval number: ${numberIntervals}`);
 
       fs.readFile("./temp/success.txt", "utf-8", (err, data) => {
         if (err && numberIntervals < timeout) {
@@ -142,12 +132,8 @@ export default class DockerCompiler {
         } else if (data) {
           //* found success.txt, return the file data to CB
           success("all tests passed!", data, true);
-          console.log("Found success file");
           exec("rm ./temp/success.txt");
-          console.log("success file deleted");
 
-          let end = performance.now();
-          // console.log(`Request took ${end - start}ms`);
 
           clearInterval(timer);
         }
