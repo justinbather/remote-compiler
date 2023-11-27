@@ -1,6 +1,6 @@
 export const languages = [
   {
-    lang: "Python",
+    lang: "python",
     fileExt: ".py",
     executor: "python",
     dockerImage: "python:3",
