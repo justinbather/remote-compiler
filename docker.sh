@@ -16,11 +16,10 @@ input=$6
 
 mv ./tests/$output ./temp/test.txt
 mv ./tests/$fileName ./temp/$fileName
-mv ./tests/$input ./temp/$input
 
 cont=$(docker run -it -d -v "$(pwd)"/temp:/temp -w /temp "$image")
 
-docker exec "$cont" ./runner.sh $fileName
+docker exec "$cont" ./runner.sh $fileName $executor
 
 output=$(docker logs "$cont")
 echo "output: $output"
@@ -29,4 +28,3 @@ docker kill $cont &>/dev/null
 docker rm $cont &>/dev/null
 
 rm ./temp/$fileName
-rm ./temp/$input

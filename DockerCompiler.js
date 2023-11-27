@@ -63,11 +63,11 @@ export default class DockerCompiler {
   prepare(success) {
 
     fs.writeFileSync(`./tests/${this.fileName}`, this.code);
-    fs.appendFileSync(`./tests/${this.fileName}`, this.caller);
-    fs.writeFileSync(
-      `./tests/${this.problem}.input${this.fileExt}`,
+    fs.appendFileSync(
+      `./tests/${this.fileName}`,
       this.input
     );
+    fs.appendFileSync(`./tests/${this.fileName}`, this.caller);
     fs.writeFileSync(`./tests/${this.problem}.output.txt`, this.output);
 
     this.execute(success);
