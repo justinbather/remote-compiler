@@ -1,8 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import DockerCompiler from "./DockerCompiler.js";
-import { languages } from "./languages.js";
 import { subscribe } from "./subscriber.js";
 import 'dotenv/config'
 
@@ -26,10 +24,6 @@ app.use((req, res, next) => {
 });
 
 subscribe();
-
-app.post("/test", (req, res) => {
-  console.log(req.body);
-});
 
 app.listen(port, () => {
   console.log("server running");
