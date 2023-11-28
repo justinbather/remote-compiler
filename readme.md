@@ -1,38 +1,30 @@
-# Testing serverside compilation
+# AlgoRace Remote Compiler Service
+The AlgoRace Remote Compiler Service is a worker service designed to handle code compilation for AlgoRace, a competitive coding platform. This service is hosted on AWS EC2 and seamlessly integrates with Rabbit MQ for efficient task handling.
 
-#### Allows a user to submit code from the client and have it ran serverside.
+## Overview
+When a compilation task is submitted, the service leverages a DockerCompiler class to encapsulate the compilation process. The DockerCompiler class assembles the delivered code, along with the necessary metadata, into two files: an executable code file and a test.txt file containing relevant test cases expected output in a dash
+seperated format. eg:
+test number-output
+1-foo
+2-bar
+3-baz
 
-#### We use a docker container to run the code then quit after completion, negating may effects of running untrusted code in the server
+### Compilation Process
+Code Assembly: The delivered code and test cases are assembled into two files, one for the executable code and another for test cases.
 
-todo:
+Docker Container: The service spawns a Docker container and mounts these files into a volume along with a runner.sh script.
 
-x Add error message return from the docker cont. instead of it just exiting out
-x Embed user code with preset code to run tests according to the problem challenge selected
-x Add test client with react
-x Connect client to server
-x Refactor DockerCompile to use a success callback
+Script Execution: The runner.sh script is executed within the Docker container, running the code file and comparing its stdout to the test cases in the test.txt file.
 
-- Add a queue system (redis)
-  x Implement a timeout procedure
-  x Work around writing to file on host filesystem to avoid overwriting from concurrent requests
-  x Delete the files on container before killing
-- Tests:
-  x create a file with tests
-  x import the usercode file and invoke the function
-  - Need to figure out a new way to facilitate testing, the .txt system breaks down when we need to pass in an array or multiple arguments.
-    Might be best to have each problem have a test file for each language? For now?
+Output Handling: The output is captured and written to either success.txt or errors.txt, depending on whether an error occurred during the execution.
 
-More languages will be added once proof of concept is more refined, JS and Python are currently available by changing
-the value provided to the server in the Monaco Editor component and axios request.
+### Result Notification
+The service continuously polls the file system, monitoring for the presence of success.txt or errors.txt. Upon detection, it sends a patch request to the manager service, updating the CompileJob with the correct status and output.
 
-### How to use:
+## Getting Started
+To use the AlgoRace Remote Compiler Service, follow the setup instructions in the documentation. Ensure that Docker is properly installed on your system.
 
-#### Fork and Clone Repository
+## Contributions
+We welcome contributions! If you have ideas, improvements, or bug fixes, feel free to open an issue or submit a pull request.
 
-#### Install dependencies 'npm i' or 'npm install'
-
-#### Run 'node index'
-
-#### cd client && npm start
-
-#### Write a simple hellow world program and submit!
+Happy coding with AlgoRace! 🚀
